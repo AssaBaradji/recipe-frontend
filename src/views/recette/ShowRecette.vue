@@ -2,6 +2,10 @@
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { Modal } from "bootstrap";
+import { useI18n } from "vue-i18n";
+
+const { locale } = useI18n();
+const t = useI18n();
 
 import { useRecipeStore } from "@store/recipeStore";
 
@@ -37,8 +41,8 @@ onMounted(() => {
       >
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class=" text-center fw-bold" id="modalTitleId">
-              Details du recette
+            <h5 class="text-center fw-bold" id="modalTitleId">
+              {{ $t("recipes.view_form.champ_detail") }}
             </h5>
             <button
               type="button"
@@ -53,15 +57,20 @@ onMounted(() => {
               <span class="fw-bold">N° : </span>{{ recipes[store.val].id }}
             </p>
             <p v-if="recipes[store.val].title">
-              <span class="fw-bold">Titre : </span
+              <span class="fw-bold"
+                >{{ $t("recipes.view_form.champ_titre") }} : </span
               >{{ recipes[store.val].title }}
             </p>
             <p v-if="recipes[store.val].type">
-              <span class="fw-bold">Type : </span>{{ recipes[store.val].type }}
+              <span class="fw-bold"
+                >{{ $t("recipes.view_form.champ_type") }} : </span
+              >{{ recipes[store.val].type }}
             </p>
             <div v-if="recipes[store.val].ingredients">
               <thead>
-                <th colspan="{{ recipes.ingredients.length }}">Ingredient</th>
+                <th colspan="{{ recipes.ingredients.length }}">
+                  {{ $t("recipes.view_form.champ_ingredient") }}
+                </th>
               </thead>
               <tbody>
                 <tr
@@ -80,7 +89,7 @@ onMounted(() => {
               data-bs-dismiss="modal"
               @click="route.push({ name: 'recette' })"
             >
-              Fermer
+              {{ $t("recipes.view_form.button_close") }}
             </button>
           </div>
         </div>

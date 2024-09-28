@@ -1,6 +1,10 @@
 <script setup>
 import { useRecipeStore } from "@store/recipeStore";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+
+const { locale } = useI18n();
+const t = useI18n();
 
 const route = useRouter();
 const store = useRecipeStore();
@@ -21,7 +25,7 @@ const saveRecipe = () => {
 
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
-          <i class="fas fa-pen"></i>&nbsp;Titre
+          <i class="fas fa-pen"></i>&nbsp;{{ $t('recipes.edit_form.champ_titre') }}
         </span>
         <input type="text" class="form-control" placeholder="Titre de la recette" v-model="newRecipe.title" />
       </div>
@@ -29,7 +33,7 @@ const saveRecipe = () => {
 
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
-          <i class="fas fa-utensils"></i>&nbsp;Type
+          <i class="fas fa-utensils"></i>&nbsp;{{ $t('recipes.edit_form.champ_type') }}
         </span>
         <select class="form-select" v-model="newRecipe.type">
           <option value="Entrée">Entrée</option>
@@ -41,7 +45,7 @@ const saveRecipe = () => {
 
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
-          <i class="fas fa-carrot"></i>&nbsp;Ingrédients
+          <i class="fas fa-carrot"></i>&nbsp;{{ $t('recipes.edit_form.champ_ingredient') }}
         </span>
         <input type="text" class="form-control" placeholder="Liste des ingrédients (séparés par des virgules)"
           v-model="newRecipe.ingredients" />
@@ -49,7 +53,7 @@ const saveRecipe = () => {
 
 
       <button class="btn btn-warning w-100 fw-bold" @click="saveRecipe">
-        <i class="fas fa-save"></i> Enregistrer
+        <i class="fas fa-save"></i> {{ $t('recipes.edit_form.button_add') }}
       </button>
     </div>
   </div>

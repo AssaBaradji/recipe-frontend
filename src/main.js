@@ -14,6 +14,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { dom } from "@fortawesome/fontawesome-svg-core";
+
 dom.watch();
 
 // Ajouter les icônes FontAwesome
@@ -95,5 +96,4 @@ app.component('CustomBtn', CustomButton);
 app.use(i18n);
 app.use(pinia);
 app.use(router);
-
 app.mount('#app');

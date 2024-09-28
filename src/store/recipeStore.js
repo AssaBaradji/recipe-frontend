@@ -1,75 +1,32 @@
+import axios from "axios";
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 
 export const useRecipeStore = defineStore("RecipeStore", () => {
-  //variables
-  const recipes = reactive([
-    {
-      id: 1,
-      title: "Salade de Quinoa",
-      type: "Entrée",
-      ingredients: [
-        "Quinoa",
-        "Tomates cerises",
-        "Concombre",
-        "Feta",
-        "Olives noires",
-        "Vinaigrette"
-      ]
-    },
-    {
-      id: 2,
-      title: "Poulet au Curry",
-      type: "Plat Principal ",
-      ingredients: [
-        "Poulet",
-        "Pâte de curry",
-        "Lait de coco",
-        "Oignons",
-        "Poivrons",
-        "Riz basmati"
-      ]
-    }, {
-      id: 3,
-      title: "Soupe à l'Oignon",
-      type: "Entrée",
-      ingredients: [
-        "Oignons",
-        "Bouillon de bœuf",
-        "Beurre",
-        "Pain grillé",
-        "Gruyère râpé",
-      ],
-    },
-  ]);
-  const val = ref(0);
-  const newRecipe = ref({
-    title: "",
-    type: "",
-    ingredients: [],
-  });
+  const recettes = ref([]);
 
-  //Functions
-  const del = (id) => {
-    recipes.splice(id, 1);
+  const loadDataFromApi = async () => {
+    try {
+      const resp = await axios.get("http://localhost:3002/recipes");
+      recettes.value = resp.data;
+    } catch (error) {
+      recettes.value = [];
+      console.error("Erreur lors du chargement des recettes :", error);
+    }
   };
-  const get = (index) => {
-    val.value = index;
-    newRecipe.value = recipes[index];
+
+  const addRecipeToAPI = async (newRecipe) => {
+    try {
+      const response = await axios.post("http://localhost:3002/recipes", newRecipe);
+      recettes.value.push(response.data);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la recette :", error);
+    }
   };
-  const edit = (index) => {
-    recipes[index].id = index + 1;
-    recipes[index].title = newRecipe.value.title;
-    recipes[index].type = newRecipe.value.type;
-    recipes[index].ingredients = newRecipe.value.ingredients.split(",");
+
+  return {
+    recettes,
+    loadDataFromApi,
+    addRecipeToAPI,
   };
-  const add = (newRecipe) => {
-    recipes.push({
-      id: recipes.length + 1,
-      title: newRecipe.title,
-      type: newRecipe.type,
-      ingredients: newRecipe.ingredients.split(","),
-    });
-  };
-  return { recipes, val, newRecipe, del, get, edit, add };
 });

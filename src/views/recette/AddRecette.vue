@@ -6,22 +6,26 @@ import { useI18n } from "vue-i18n";
 
 const route = useRouter();
 const store = useRecipeStore();
-const { t } = useI18n(); // Utilisation de vue-i18n pour la traduction
+const { t } = useI18n();
 
 const newRecipe = ref({
   title: "",
   type: "",
-  ingredients: [],
+  ingredient: "",
 });
+
+const submitRecipe = async () => {
+  await store.addRecipeToAPI(newRecipe.value);
+  route.push({ name: "recette" }); 
+};
 </script>
 
 <template>
   <div class="container mt-5">
-    <!-- Titre de la page avec traduction -->
     <h1 class="mb-4 text-center fw-bold text-warning">{{ t('recipes.addForm.title') }}</h1>
 
     <div class="p-4 bg-light rounded shadow-sm">
-      <!-- Titre de la recette avec traduction -->
+
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
           <i class="fas fa-pen"></i>&nbsp;{{ t('recipes.addForm.recipeTitle') }}
@@ -30,7 +34,6 @@ const newRecipe = ref({
           v-model="newRecipe.title" />
       </div>
 
-      <!-- Type de la recette avec traduction -->
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
           <i class="fas fa-utensils"></i>&nbsp;{{ t('recipes.addForm.recipeType') }}
@@ -42,7 +45,6 @@ const newRecipe = ref({
         </select>
       </div>
 
-      <!-- Ingrédients de la recette avec traduction -->
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
           <i class="fas fa-carrot"></i>&nbsp;{{ t('recipes.addForm.ingredients') }}
@@ -51,8 +53,7 @@ const newRecipe = ref({
           v-model="newRecipe.ingredients" />
       </div>
 
-      <!-- Bouton d'enregistrement avec traduction -->
-      <button class="btn btn-warning w-100 fw-bold" @click="store.add(newRecipe); route.push({ name: 'recette' })">
+      <button class="btn btn-warning w-100 fw-bold" @click="submitRecipe">
         <i class="fas fa-save"></i> {{ t('recipes.addForm.save') }}
       </button>
     </div>

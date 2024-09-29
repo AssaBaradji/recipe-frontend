@@ -1,16 +1,10 @@
-<!-- AddCategory.vue -->
 <template>
   <div>
     <div v-if="isAdding">
       <h3>Ajouter une nouvelle catégorie</h3>
       <form @submit.prevent="submitAddForm">
         <div class="mb-3">
-          <input
-            v-model="newCategoryName"
-            class="form-control"
-            type="text"
-            placeholder="Nom de la catégorie"
-          />
+          <input v-model="newCategoryName" class="form-control" type="text" placeholder="Nom de la catégorie" />
         </div>
         <button class="btn btn-primary" type="submit">Ajouter</button>
         <button class="btn btn-secondary" @click="cancelAdd">Annuler</button>
@@ -43,10 +37,11 @@ const cancelAdd = () => {
   isAdding.value = false;
 };
 
-const submitAddForm = () => {
+const submitAddForm = async () => {
   if (newCategoryName.value.trim()) {
-    categoryStore.addCategory({ name: newCategoryName.value });
+    await categoryStore.addCategory({ name: newCategoryName.value });
     isAdding.value = false;
+    newCategoryName.value = ""; 
   }
 };
 </script>

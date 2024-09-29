@@ -14,10 +14,21 @@ export const useCategoryStore = defineStore("category", () => {
     }
   };
 
+  const addCategory = async (category) => {
+    try {
+      const response = await axios.post("http://localhost:3002/categories", category);
+      categories.value.push(response.data);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la catégorie:", error);
+    }
+  };
+
   return {
     categories,
     loadCategoriesFromAPI,
+    addCategory,
   };
 });
+
 
 

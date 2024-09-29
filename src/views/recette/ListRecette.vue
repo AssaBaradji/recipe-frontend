@@ -8,6 +8,7 @@ const router = useRouter();
 
 onMounted(() => {
   store.loadDataFromApi();
+  console.log(store.recettes);
 });
 
 const goToAddRecipePage = () => {
@@ -37,6 +38,7 @@ const goToAddRecipePage = () => {
           <th scope="col">Type</th>
           <th scope="col">Ingrédients</th>
           <th scope="col">Catégorie</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -45,7 +47,18 @@ const goToAddRecipePage = () => {
           <td>{{ recette.title }}</td>
           <td>{{ recette.type }}</td>
           <td>{{ recette.ingredient }}</td>
-          <td>{{ recette.category?.name || 'Non définie' }}</td> 
+          <td>{{ recette.category?.name || 'Non définie' }}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary me-2">
+              <i class="fas fa-eye"></i> 
+            </button>
+            <button class="btn btn-sm btn-outline-secondary me-2">
+              <i class="fas fa-edit"></i> 
+            </button>
+            <button class="btn btn-sm btn-outline-danger">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>

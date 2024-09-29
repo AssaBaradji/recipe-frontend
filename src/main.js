@@ -14,7 +14,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { dom } from "@fortawesome/fontawesome-svg-core";
-
+import AddCategory from "./views/categorie/AddCategory.vue";
 dom.watch();
 
 // Ajouter les icônes FontAwesome
@@ -31,7 +31,9 @@ const messages = {
         number: "No.",
         title: "Title",
         type: "Type",
+        category: "Category",
         actions: "Actions",
+        ingredients: "Ingredients",
         confirmDelete:
           "Are you sure you want to delete the recipe {recipeTitle}?",
       },
@@ -48,11 +50,13 @@ const messages = {
         ingredients: "Ingredients",
         ingredientsPlaceholder: "List of ingredients",
         save: "Save Recipe",
+        category: "category",
       },
 
       App_page: {
         titre: "ZuKitchen",
-        titre2: "Recipes",
+        menu: "Recipes",
+        menu2: "Category",
       },
 
       home_page: {
@@ -72,7 +76,28 @@ const messages = {
         champ_type: "type",
         champ_ingredient: "Ingredient",
         button_close: "Close",
+        champ_categorie: "category",
       },
+      addNew: {
+        title: "Add New Category",
+      },
+    },
+    category: {
+      title: "Category Manager",
+      Added: "Add Category",
+      name: "Name",
+      actions: "Actions",
+      message: "No Categories Found",
+      editCategory: "Edit Category",
+      addCategory: "Add Category",
+      saveChanges: "Save Changes",
+      add: "Add",
+      cancel: "Cancel",
+      edit: "Edit",
+      delete: "Delete",
+      view: "View",
+      nameLabel: "Category Name",
+      namePlaceholder: "Enter category name",
     },
   },
   fr: {
@@ -84,7 +109,9 @@ const messages = {
         number: "N°",
         title: "Titres",
         type: "Type",
+        category: "Categorie",
         actions: "Actions",
+        ingredients: "Ingredients",
         confirmDelete:
           "Vous êtes sûr de vouloir supprimer la recette {recipeTitle} ?",
       },
@@ -101,10 +128,12 @@ const messages = {
         ingredients: "Ingrédients",
         ingredientsPlaceholder: "Liste des ingrédients",
         save: "Enregistrer la Recette",
+        category: "catégorie",
       },
       App_page: {
         titre: "cuisineZu",
-        titre2: "Recette",
+        menu: "Recette",
+        menu2: "Catégorie",
       },
       home_page: {
         acceuil: "Bienvenu Dans la cuisine de Zu !",
@@ -123,7 +152,28 @@ const messages = {
         champ_type: "type",
         champ_ingredient: "Ingrédient",
         button_close: "Fermer",
+        champ_categorie: "categorie",
       },
+      addNew: {
+        title: "Ajouter Une Nouvelle Recette",
+      },
+    },
+    category: {
+      title: "Gestion des Catégories",
+      Added: "Ajouter une Catégorie",
+      name: "Nom",
+      actions: "Actions",
+      message: "Aucune catégorie disponible.",
+      editCategory: "Modifier la Catégorie",
+      addCategory: "Ajouter une Catégorie",
+      saveChanges: "Enregistrer les Modifications",
+      add: "Ajouter",
+      cancel: "Annuler",
+      edit: "Modifier",
+      delete: "Supprimer",
+      view: "Voir",
+      nameLabel: "Nom de la Catégorie",
+      namePlaceholder: "Entrez le nom de la catégorie",
     },
   },
 };
@@ -145,4 +195,4 @@ app.use(i18n);
 app.use(pinia);
 app.use(router);
 
-app.mount('#app');
+app.mount("#app");

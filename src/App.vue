@@ -7,7 +7,7 @@ const { locale } = useI18n();
 const t = useI18n();
 
 const changeLanguage = (event) => {
-  locale.value = event.target.value; // Changer la langue avec la valeur sélectionnée
+  locale.value = event.target.value;
 };
 </script>
 
@@ -15,7 +15,7 @@ const changeLanguage = (event) => {
   <header class="container-fluid navbar navbar-expand-lg navbar-dark bg-warning">
     <nav class="container">
       <a class="navbar-brand d-flex align-items-center text-dark" @click="router.push({ name: 'home' })">
-        <i class="fas fa-utensils me-2"></i> {{ $t('recipes.App_page.titre') }}
+        <i class="fas fa-utensils me-2"></i> {{ $t("recipes.App_page.titre") }}
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,11 +25,15 @@ const changeLanguage = (event) => {
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
             <button class="btn btn-outline-dark me-2" @click="router.push({ name: 'recette' })">
-              {{ $t('recipes.App_page.titre2') }} <!-- Traduction dynamique -->
+              {{ $t("recipes.App_page.menu") }}
             </button>
           </li>
           <li class="nav-item">
-            <!-- Sélecteur de langue -->
+            <button class="btn btn-outline-dark me-2" @click="router.push({ name: 'categorie' })">
+              {{ $t("recipes.App_page.menu2") }}
+            </button>
+          </li>
+          <li class="nav-item">
             <select class="form-select" @change="changeLanguage">
               <option value="fr" selected>Français</option>
               <option value="en">English</option>

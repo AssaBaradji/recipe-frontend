@@ -17,8 +17,8 @@ export const useRecipeStore = defineStore("RecipeStore", () => {
 
   const addRecipeToAPI = async (newRecipe) => {
     try {
-      const response = await axios.post("http://localhost:3002/recipes", newRecipe);
-      recettes.value.push(response.data);
+      const resp = await axios.post("http://localhost:3002/recipes", newRecipe);
+      recettes.value.push(resp.data);
     } catch (error) {
       console.error("Erreur lors de l'ajout de la recette :", error);
     }

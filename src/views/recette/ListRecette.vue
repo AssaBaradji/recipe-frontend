@@ -8,7 +8,7 @@ const router = useRouter();
 
 onMounted(() => {
   store.loadDataFromApi();
-});                
+});
 
 const goToAddRecipePage = () => {
   router.push({ name: 'recette-add' });
@@ -35,7 +35,8 @@ const goToAddRecipePage = () => {
           <th scope="col">#</th>
           <th scope="col">Titre</th>
           <th scope="col">Type</th>
-          <th scope="col">Ingrédient</th>
+          <th scope="col">Ingrédients</th>
+          <th scope="col">Catégorie</th>
         </tr>
       </thead>
       <tbody>
@@ -44,6 +45,7 @@ const goToAddRecipePage = () => {
           <td>{{ recette.title }}</td>
           <td>{{ recette.type }}</td>
           <td>{{ recette.ingredient }}</td>
+          <td>{{ recette.category?.name || 'Non définie' }}</td> 
         </tr>
       </tbody>
     </table>

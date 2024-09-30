@@ -1,18 +1,45 @@
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRecipeStore } from "@store/recipeStore";
+import { useCategoryStore } from "@store/categoryStore";
 import { useRouter } from "vue-router";
 
-const store = useRecipeStore();
+const recipeStore = useRecipeStore();
+const categoryStore = useCategoryStore();
 const router = useRouter();
 
+const showModal = ref(false);
+const selectedRecipeId = ref(null);
+
 onMounted(() => {
-  store.loadDataFromApi();
-  console.log(store.recettes);
+  recipeStore.loadDataFromApi();
+  categoryStore.loadCategoriesFromAPI();
 });
 
+// Rediriger vers la page d'ajout de recettes
 const goToAddRecipePage = () => {
   router.push({ name: 'recette-add' });
+};
+
+// Ouvrir le modal de confirmation
+const openConfirmationModal = (recipeId) => {
+  selectedRecipeId.value = recipeId;
+  showModal.value = true;
+};
+
+// Confirmer la suppression
+const confirmDeleteRecipe = async () => {
+  if (selectedRecipeId.value) {
+    await recipeStore.deleteRecipeFromAPI(selectedRecipeId.value);
+    showModal.value = false;
+    selectedRecipeId.value = null;
+  }
+};
+
+// Fermer le modal
+const closeModal = () => {
+  showModal.value = false;
+  selectedRecipeId.value = null;
 };
 </script>
 
@@ -26,7 +53,7 @@ const goToAddRecipePage = () => {
       </button>
     </div>
 
-    <div v-if="store.recettes.length === 0" class="text-center">
+    <div v-if="recipeStore.recettes.length === 0" class="text-center">
       <p>Aucune recette trouvée.</p>
     </div>
 
@@ -42,7 +69,7 @@ const goToAddRecipePage = () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(recette, index) in store.recettes" :key="recette.id">
+        <tr v-for="(recette, index) in recipeStore.recettes" :key="recette.id">
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ recette.title }}</td>
           <td>{{ recette.type }}</td>
@@ -50,19 +77,45 @@ const goToAddRecipePage = () => {
           <td>{{ recette.category?.name || 'Non définie' }}</td>
           <td class="text-center">
             <button class="btn btn-sm btn-outline-primary me-2">
-              <i class="fas fa-eye"></i> 
+              <i class="fas fa-eye"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary me-2">
-              <i class="fas fa-edit"></i> 
+              <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-sm btn-outline-danger">
+            <button class="btn btn-sm btn-outline-danger" @click="openConfirmationModal(recette.id)">
               <i class="fas fa-trash"></i>
             </button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Modal de confirmation -->
+    <div v-if="showModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmer la suppression</h5>
+            <button type="button" class="btn-close" @click="closeModal"></button>
+          </div>
+          <div class="modal-body">
+            <p>Êtes-vous sûr de vouloir supprimer cette recette ?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="closeModal">Annuler</button>
+            <button type="button" class="btn btn-danger" @click="confirmDeleteRecipe">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Style pour modal personnalisé */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

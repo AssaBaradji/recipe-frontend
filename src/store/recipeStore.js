@@ -1,6 +1,6 @@
-import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import axios from "axios";
 
 export const useRecipeStore = defineStore("RecipeStore", () => {
   const recettes = ref([]);
@@ -24,9 +24,19 @@ export const useRecipeStore = defineStore("RecipeStore", () => {
     }
   };
 
+  const deleteRecipeFromAPI = async (recipeId) => {
+    try {
+      await axios.delete(`http://localhost:3002/recipes/${recipeId}`);
+      recettes.value = recettes.value.filter((recette) => recette.id !== recipeId);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la recette :", error);
+    }
+  };
+
   return {
     recettes,
     loadDataFromApi,
     addRecipeToAPI,
+    deleteRecipeFromAPI, // Exporter la méthode
   };
 });

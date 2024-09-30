@@ -21,6 +21,11 @@ const goToAddRecipePage = () => {
   router.push({ name: 'recette-add' });
 };
 
+// Rediriger vers la page d'édition de recettes
+const goToEditRecipePage = (recipeId) => {
+  router.push({ name: 'recette-edit', params: { id: recipeId } });
+};
+
 // Ouvrir le modal de confirmation
 const openConfirmationModal = (recipeId) => {
   selectedRecipeId.value = recipeId;
@@ -73,13 +78,10 @@ const closeModal = () => {
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ recette.title }}</td>
           <td>{{ recette.type }}</td>
-          <td>{{ recette.ingredient }}</td>
+          <td>{{ recette.ingredients }}</td>
           <td>{{ recette.category?.name || 'Non définie' }}</td>
           <td class="text-center">
-            <button class="btn btn-sm btn-outline-primary me-2">
-              <i class="fas fa-eye"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-secondary me-2">
+            <button class="btn btn-sm btn-outline-primary me-2" @click="goToEditRecipePage(recette.id)">
               <i class="fas fa-edit"></i>
             </button>
             <button class="btn btn-sm btn-outline-danger" @click="openConfirmationModal(recette.id)">

@@ -1,16 +1,15 @@
-// categoryStore.js
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
 
 export const useCategoryStore = defineStore("category", () => {
-  const categories = ref([]); // Liste des catégories
+  const categories = ref([]);
 
-  // Charger les catégories depuis l'API
+
   const loadCategoriesFromAPI = async () => {
     try {
       const response = await axios.get("http://localhost:3002/categories");
-      categories.value = response.data; // Mise à jour de la liste des catégories
+      categories.value = response.data;
     } catch (error) {
       console.error("Erreur lors de la récupération des catégories:", error);
     }

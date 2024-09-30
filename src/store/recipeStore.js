@@ -33,10 +33,23 @@ export const useRecipeStore = defineStore("RecipeStore", () => {
     }
   };
 
+  const editRecipe = async (updatedRecipe) => {
+    try {
+      const resp = await axios.put(`http://localhost:3002/recipes/${updatedRecipe.id}`, updatedRecipe);
+      const index = recettes.value.findIndex((r) => r.id === updatedRecipe.id);
+      if (index !== -1) {
+        recettes.value[index] = resp.data;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la modification de la recette :", error);
+    }
+  };
+
   return {
     recettes,
     loadDataFromApi,
     addRecipeToAPI,
-    deleteRecipeFromAPI, // Exporter la méthode
+    deleteRecipeFromAPI,
+    editRecipe
   };
 });

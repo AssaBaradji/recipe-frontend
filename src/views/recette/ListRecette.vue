@@ -16,23 +16,19 @@ onMounted(() => {
   categoryStore.loadCategoriesFromAPI();
 });
 
-// Rediriger vers la page d'ajout de recettes
 const goToAddRecipePage = () => {
   router.push({ name: 'recette-add' });
 };
 
-// Rediriger vers la page d'édition de recettes
 const goToEditRecipePage = (recipeId) => {
   router.push({ name: 'recette-edit', params: { id: recipeId } });
 };
 
-// Ouvrir le modal de confirmation
 const openConfirmationModal = (recipeId) => {
   selectedRecipeId.value = recipeId;
   showModal.value = true;
 };
 
-// Confirmer la suppression
 const confirmDeleteRecipe = async () => {
   if (selectedRecipeId.value) {
     await recipeStore.deleteRecipeFromAPI(selectedRecipeId.value);

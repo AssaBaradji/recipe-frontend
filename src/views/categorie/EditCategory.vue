@@ -1,18 +1,18 @@
 <template>
   <div>
     <div v-if="isEditing">
-      <h3>Modifier la catégorie</h3>
+      <h3>{{ t("category.table.editTitle") }}</h3>
       <form @submit.prevent="submitEditForm">
         <div class="mb-3">
           <input
             v-model="editedCategoryName"
             class="form-control"
             type="text"
-            placeholder="Nom de la catégorie"
+            placeholder="t('category.addForm_category.formName')"
           />
         </div>
-        <button class="btn btn-primary" type="submit">Modifier</button>
-        <button class="btn btn-secondary" @click="cancelEdit">Annuler</button>
+        <button class="btn btn-primary" type="submit">{{ t('category.addForm_category.formbutton') }}</button>
+        <button class="btn btn-secondary" @click="cancelEdit">{{ t('category.addForm_category.buttonCancel') }}</button>
       </form>
     </div>
   </div>
@@ -20,9 +20,12 @@
 
 <script setup>
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useCategoryStore } from "../../store/categoryStore";
 
+
 const categoryStore = useCategoryStore();
+const { t } = useI18n();
 
 const isEditing = ref(true);
 const editedCategoryName = ref("");

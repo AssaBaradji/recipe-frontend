@@ -1,22 +1,22 @@
 <template>
   <div class="container mt-5">
-    <h1 class="mb-4 text-center fw-bold text-warning">Liste des Catégories</h1>
+    <h1 class="mb-4 text-center fw-bold text-warning">{{ t("category.table.titre_list") }}</h1>
 
     <div class="text-end mb-4">
       <button class="btn btn-warning fw-bold" @click="goToAddCategoryPage">
-        <i class="fas fa-plus"></i> Ajouter une catégorie
+        <i class="fas fa-plus"></i> {{ t("category.table.Add_category") }}
       </button>
     </div>
 
     <div v-if="store.categories.length === 0" class="text-center">
-      <p>Aucune catégorie trouvée.</p>
+      <p>{{ t("category.table.message_found") }}</p>
     </div>
 
     <table v-else class="table table-striped table-bordered">
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Nom</th>
+          <th scope="col">{{ t("category.table.name") }}</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -38,15 +38,15 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Confirmer la suppression</h5>
+            <h5 class="modal-title">{{ t("category.table.destroyconfirm") }}</h5>
             <button type="button" class="btn-close" @click="closeModal"></button>
           </div>
           <div class="modal-body">
-            <p>Êtes-vous sûr de vouloir supprimer cette catégorie ?</p>
+            <p>{{ t("recipes.table.destroyconfirm2") }}</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="closeModal">Annuler</button>
-            <button type="button" class="btn btn-danger" @click="confirmDeleteCategory">Supprimer</button>
+            <button type="button" class="btn btn-secondary" @click="closeModal">{{ t("category.table.annuler") }}</button>
+            <button type="button" class="btn btn-danger" @click="confirmDeleteCategory">{{ t("category.table.delete") }}</button>
           </div>
         </div>
       </div>
@@ -58,7 +58,10 @@
 import { onMounted, ref } from "vue";
 import { useCategoryStore } from "@store/categoryStore";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
+
+const { t } = useI18n();
 const store = useCategoryStore();
 const router = useRouter();
 const showModal = ref(false);

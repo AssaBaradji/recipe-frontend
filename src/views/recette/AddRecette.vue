@@ -10,6 +10,13 @@ const recipeStore = useRecipeStore();
 const categoryStore = useCategoryStore();
 const { t } = useI18n();
 
+const categories = ref([
+  { id: 1, name: t('category.frenchCuisine') },
+  { id: 2, name: t('category.moroccanCuisine') },
+  { id: 3, name: t('category.mexicanCuisine') },
+  { id: 6, name: t('category.indianCuisine') },
+  { id: 10, name: t('category.senegaleseCuisine') },
+]);
 
 const newRecipe = ref({
   title: "",
@@ -65,9 +72,9 @@ const submitRecipe = async () => {
           <i class="fas fa-utensils"></i>&nbsp;{{ t('recipes.addForm.recipeType') }}
         </span>
         <select class="form-select" v-model="newRecipe.type">
-          <option value="Entrée">{{ t('recipes.table.starter') }}</option>
-          <option value="Plat">{{ t('recipes.table.mainCourse') }}</option>
-          <option value="Dessert">{{ t('recipes.table.dessert') }}</option>
+          <option value="Entrée">{{ t('recipes.edit_form.option_Entrée') }}</option>
+          <option value="Plat">{{ t('recipes.edit_form.option_plat') }}</option>
+          <option value="Dessert">{{ t('recipes.edit_form.option_dessert') }}</option>
         </select>
       </div>
 
@@ -85,7 +92,7 @@ const submitRecipe = async () => {
         </span>
         <select class="form-select" v-model="newRecipe.category_id">
           <option disabled value="">{{ t('recipes.addForm.selectCategory') }}</option>
-          <option v-for="category in categoryStore.categories" :key="category.id" :value="category.id">
+          <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.name }}
           </option>
         </select>

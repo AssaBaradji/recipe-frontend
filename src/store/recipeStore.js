@@ -2,8 +2,8 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
 
-export const useRecipeStore = defineStore("RecipeStore", () => {
-  const recettes = ref([]);
+export const useRecipeStore = defineStore("recipeStore", () => {
+  const recettes = ref([]); // Bien s'assurer que "recettes" est défini
 
   const loadDataFromApi = async () => {
     try {
@@ -44,9 +44,10 @@ export const useRecipeStore = defineStore("RecipeStore", () => {
       console.error("Erreur lors de la modification de la recette :", error);
     }
   };
+  
 
   return {
-    recettes,
+    recettes, // Vérifie que tu retournes bien la propriété "recettes"
     loadDataFromApi,
     addRecipeToAPI,
     deleteRecipeFromAPI,

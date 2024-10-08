@@ -1,54 +1,3 @@
-<script setup>
-import { ref, onMounted } from "vue";
-import { useRecipeStore } from "@store/recipeStore";
-import { useCategoryStore } from "@store/categoryStore";
-import { useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
-
-
-
-const { t } = useI18n();
-const recipeStore = useRecipeStore();
-const categoryStore = useCategoryStore();
-const router = useRouter();
-
-
-const showModal = ref(false);
-const selectedRecipeId = ref(null);
-
-onMounted(() => {
-  recipeStore.loadDataFromApi();
-  categoryStore.loadCategoriesFromAPI();
-});
-
-const goToAddRecipePage = () => {
-  router.push({ name: 'recette-add' });
-};
-
-const goToEditRecipePage = (recipeId) => {
-  router.push({ name: 'recette-edit', params: { id: recipeId } });
-};
-
-const openConfirmationModal = (recipeId) => {
-  selectedRecipeId.value = recipeId;
-  showModal.value = true;
-};
-
-const confirmDeleteRecipe = async () => {
-  if (selectedRecipeId.value) {
-    await recipeStore.deleteRecipeFromAPI(selectedRecipeId.value);
-    showModal.value = false;
-    selectedRecipeId.value = null;
-  }
-};
-
-// Fermer le modal
-const closeModal = () => {
-  showModal.value = false;
-  selectedRecipeId.value = null;
-};
-</script>
-
 <template>
   <div class="container mt-5">
     <h1 class="mb-4 text-center fw-bold text-warning">{{ t('recipes.table.titleList') }}</h1>
@@ -79,9 +28,18 @@ const closeModal = () => {
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ recette.title }}</td>
           <td>{{ recette.type }}</td>
-          <td>{{ recette.ingredients }}</td>
+          <td>{{ recette.ingredient }}</td>
           <td>{{ recette.category?.name || 'Non définie' }}</td>
           <td class="text-center">
+            <button 
+              class="btn btn-sm btn-outline-primary me-2" 
+              @click="
+                recipeStore.get(index), 
+                router.push({ name: 'recette-show', params: { id: recette.id } })
+              "
+            >
+              <i class="fas fa-eye"></i> 
+            </button>
             <button class="btn btn-sm btn-outline-primary me-2" @click="goToEditRecipePage(recette.id)">
               <i class="fas fa-edit"></i>
             </button>
@@ -114,11 +72,50 @@ const closeModal = () => {
   </div>
 </template>
 
-<style scoped>
-/* Style pour modal personnalisé */
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRecipeStore } from "@store/recipeStore";
+import { useCategoryStore } from "@store/categoryStore";
+import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+const recipeStore = useRecipeStore(); // Ensure the store is properly called
+const categoryStore = useCategoryStore();
+const router = useRouter();
+
+const showModal = ref(false);
+const selectedRecipeId = ref(null);
+
+// Load data on component mount
+onMounted(() => {
+  recipeStore.loadDataFromApi();
+  categoryStore.loadCategoriesFromAPI();
+});
+
+const goToAddRecipePage = () => {
+  router.push({ name: 'recette-add' });
+};
+
+const goToEditRecipePage = (recipeId) => {
+  router.push({ name: 'recette-edit', params: { id: recipeId } });
+};
+
+const openConfirmationModal = (recipeId) => {
+  selectedRecipeId.value = recipeId;
+  showModal.value = true;
+};
+
+const confirmDeleteRecipe = async () => {
+  if (selectedRecipeId.value) {
+    await recipeStore.deleteRecipeFromAPI(selectedRecipeId.value);
+    showModal.value = false;
+    selectedRecipeId.value = null;
+  }
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  selectedRecipeId.value = null;
+};
+</script>

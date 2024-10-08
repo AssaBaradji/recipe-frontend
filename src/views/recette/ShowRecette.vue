@@ -3,23 +3,24 @@ import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 import { Modal } from "bootstrap";
 import { useI18n } from "vue-i18n";
-
-const { locale } = useI18n();
-const t = useI18n();
-
 import { useRecipeStore } from "@store/recipeStore";
 
 const store = useRecipeStore();
 const recettetModal = ref(null);
 const route = useRouter();
+const { t } = useI18n();
 
-const recipes = store.recipes;
-
-onMounted(() => {
+// Assurez-vous que les données sont chargées lorsque le composant est monté
+onMounted(async () => {
+  await store.loadDataFromApi(); // Appelle la fonction pour charger les données
   const modalElement = recettetModal.value;
   const bootstrapModal = new Modal(modalElement);
   bootstrapModal.show();
 });
+
+// Accédez aux recettes directement
+const selectedRecipeIndex = store.val; // Supposons que store.val est défini correctement
+const recipes = store.recettes.value; // Accès à la valeur de la ref
 </script>
 
 <template>
@@ -42,7 +43,7 @@ onMounted(() => {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="text-center fw-bold" id="modalTitleId">
-              {{ $t("recipes.view_form.champ_detail") }}
+              {{ t("recipes.view_form.champ_detail") }}
             </h5>
             <button
               type="button"
@@ -52,36 +53,39 @@ onMounted(() => {
               @click="route.push({ name: 'recette' })"
             ></button>
           </div>
+
           <div class="modal-body">
-            <p v-if="recipes[store.val].id">
-              <span class="fw-bold">N° : </span>{{ recipes[store.val].id }}
+            <p v-if="recipes[selectedRecipeIndex].title">
+              <span class="fw-bold">{{ t("recipes.view_form.champ_titre") }} :</span>
+              {{ recipes[selectedRecipeIndex].title }}
             </p>
-            <p v-if="recipes[store.val].title">
-              <span class="fw-bold"
-                >{{ $t("recipes.view_form.champ_titre") }} : </span
-              >{{ recipes[store.val].title }}
+
+            <p v-if="recipes[selectedRecipeIndex].type">
+              <span class="fw-bold">{{ t("recipes.view_form.champ_type") }} :</span>
+              {{ recipes[selectedRecipeIndex].type }}
             </p>
-            <p v-if="recipes[store.val].type">
-              <span class="fw-bold"
-                >{{ $t("recipes.view_form.champ_type") }} : </span
-              >{{ recipes[store.val].type }}
-            </p>
-            <div v-if="recipes[store.val].ingredients">
+
+            <table class="table">
               <thead>
-                <th colspan="{{ recipes.ingredients.length }}">
-                  {{ $t("recipes.view_form.champ_ingredient") }}
-                </th>
+                <tr>
+                  <th>{{ t("recipes.view_form.champ_categorie") }}</th>
+                  <th>{{ t("recipes.view_form.champ_ingredient") }}</th>
+                </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="(ingredient, val) in recipes[store.val].ingredients"
-                  :key="val"
-                >
-                  <td class="text-success">- {{ ingredient }}</td>
+                <tr>
+                  <td colspan="2">
+                    {{ recipes[selectedRecipeIndex].category || "-" }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>{{ recipes[selectedRecipeIndex].ingredient }}</td>
                 </tr>
               </tbody>
-            </div>
+            </table>
           </div>
+
           <div class="modal-footer d-flex justify-content-between">
             <button
               type="button"
@@ -89,7 +93,7 @@ onMounted(() => {
               data-bs-dismiss="modal"
               @click="route.push({ name: 'recette' })"
             >
-              {{ $t("recipes.view_form.button_close") }}
+              {{ t("recipes.view_form.button_close") }}
             </button>
           </div>
         </div>
@@ -97,3 +101,6 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+</style>

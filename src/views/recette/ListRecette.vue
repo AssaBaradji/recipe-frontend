@@ -1,26 +1,28 @@
 <template>
   <div class="container mt-5">
-    <h1 class="mb-4 text-center fw-bold text-warning">{{ t('recipes.table.titleList') }}</h1>
+    <h1 class="mb-4 text-center fw-bold text-warning">
+      {{ t("recipes.table.titleList") }}
+    </h1>
 
     <div class="text-end mb-4">
       <button class="btn btn-warning fw-bold" @click="goToAddRecipePage">
-        <i class="fas fa-plus"></i> {{ t('recipes.table.AddRecipe') }}
+        <i class="fas fa-plus"></i> {{ t("recipes.table.AddRecipe") }}
       </button>
     </div>
 
     <div v-if="recipeStore.recettes.length === 0" class="text-center">
-      <p>{{ t('recipes.table.messageFound') }}.</p>
+      <p>{{ t("recipes.table.messageFound") }}.</p>
     </div>
 
     <table v-else class="table table-striped table-bordered">
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">{{ t('recipes.table.tabtitle') }}</th>
-          <th scope="col">{{ t('recipes.table.tabtype') }}</th>
-          <th scope="col">{{ t('recipes.table.tabingredients') }}</th>
-          <th scope="col">{{ t('recipes.table.tabcat') }}</th>
-          <th scope="col">{{ t('recipes.table.tabaction') }}</th>
+          <th scope="col">{{ t("recipes.table.tabtitle") }}</th>
+          <th scope="col">{{ t("recipes.table.tabtype") }}</th>
+          <th scope="col">{{ t("recipes.table.tabingredients") }}</th>
+          <th scope="col">{{ t("recipes.table.tabcat") }}</th>
+          <th scope="col">{{ t("recipes.table.tabaction") }}</th>
         </tr>
       </thead>
       <tbody>
@@ -29,21 +31,30 @@
           <td>{{ recette.title }}</td>
           <td>{{ recette.type }}</td>
           <td>{{ recette.ingredient }}</td>
-          <td>{{ recette.category?.name || 'Non définie' }}</td>
+          <td>{{ getCategoryName(recette.category_id) || "Non définie" }}</td>
           <td class="text-center">
-            <button 
-              class="btn btn-sm btn-outline-primary me-2" 
+            <button
+              class="btn btn-sm btn-outline-primary me-2"
               @click="
-                recipeStore.get(index), 
-                router.push({ name: 'recette-show', params: { id: recette.id } })
+                router.push({
+                  name: 'recette-show',
+                  params: { id: recette.id },
+                });
+                recipeStore.getRecipeById(recette.id);
               "
             >
-              <i class="fas fa-eye"></i> 
+              <i class="fas fa-eye"></i>
             </button>
-            <button class="btn btn-sm btn-outline-primary me-2" @click="goToEditRecipePage(recette.id)">
+            <button
+              class="btn btn-sm btn-outline-secondary me-2"
+              @click="goToEditRecipePage(recette.id)"
+            >
               <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-sm btn-outline-danger" @click="openConfirmationModal(recette.id)">
+            <button
+              class="btn btn-sm btn-outline-danger"
+              @click="openConfirmationModal(recette.id)"
+            >
               <i class="fas fa-trash"></i>
             </button>
           </td>
@@ -52,19 +63,36 @@
     </table>
 
     <!-- Modal de confirmation -->
-    <div v-if="showModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div
+      v-if="showModal"
+      class="modal d-block"
+      tabindex="-1"
+      style="background-color: rgba(0, 0, 0, 0.5)"
+    >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">{{ t('recipes.table.messagesup') }}</h5>
-            <button type="button" class="btn-close" @click="closeModal"></button>
+            <h5 class="modal-title">{{ t("recipes.table.messagesup") }}</h5>
+            <button
+              type="button"
+              class="btn-close"
+              @click="closeModal"
+            ></button>
           </div>
           <div class="modal-body">
-            <p>{{ t('recipes.table.confirmessage') }}</p>
+            <p>{{ t("recipes.table.confirmessage") }}</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="closeModal">{{ t("recipes.table.annuler") }}</button>
-            <button type="button" class="btn btn-danger" @click="confirmDeleteRecipe">{{ t("recipes.table.delete") }}</button>
+            <button type="button" class="btn btn-secondary" @click="closeModal">
+              {{ t("recipes.table.annuler") }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              @click="confirmDeleteRecipe"
+            >
+              {{ t("recipes.table.delete") }}
+            </button>
           </div>
         </div>
       </div>
@@ -80,25 +108,32 @@ import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-const recipeStore = useRecipeStore(); // Ensure the store is properly called
+const recipeStore = useRecipeStore();
 const categoryStore = useCategoryStore();
 const router = useRouter();
 
 const showModal = ref(false);
 const selectedRecipeId = ref(null);
 
-// Load data on component mount
+// Fonction pour obtenir le nom de la catégorie à partir de son ID
+const getCategoryName = (categoryId) => {
+  const category = categoryStore.categories.find(
+    (cat) => cat.id === categoryId
+  );
+  return category ? category.name : null;
+};
+
 onMounted(() => {
   recipeStore.loadDataFromApi();
-  categoryStore.loadCategoriesFromAPI();
+  categoryStore.loadCategoriesFromAPI(); // Chargement des catégories
 });
 
 const goToAddRecipePage = () => {
-  router.push({ name: 'recette-add' });
+  router.push({ name: "recette-add" });
 };
 
 const goToEditRecipePage = (recipeId) => {
-  router.push({ name: 'recette-edit', params: { id: recipeId } });
+  router.push({ name: "recette-edit", params: { id: recipeId } });
 };
 
 const openConfirmationModal = (recipeId) => {

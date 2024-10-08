@@ -1,60 +1,76 @@
 <template>
-  <div>
-    <div v-if="isEditing">
-      <h3>{{ t("category.table.editTitle") }}</h3>
+  <div class="container mt-5">
+    <div class="p-4 bg-light rounded shadow-sm">
+      <h3>{{ t("category.editTitle") }}</h3>
       <form @submit.prevent="submitEditForm">
-        <div class="mb-3">
+        <div class="input-group mb-4">
+          <span class="input-group-text bg-warning text-dark fw-bold">
+            <i class="fas fa-tag"></i>&nbsp;{{ t("category.editForm.name") }}
+          </span>
           <input
-            v-model="editedCategoryName"
+            v-model="categoryName"
+            id="categoryName"
             class="form-control"
             type="text"
-            placeholder="t('category.addForm_category.formName')"
+            :placeholder="t('category.editForm.namePlaceholder')"
+            required
           />
         </div>
-        <button class="btn btn-primary" type="submit">{{ t('category.addForm_category.formbutton') }}</button>
-        <button class="btn btn-secondary" @click="cancelEdit">{{ t('category.addForm_category.buttonCancel') }}</button>
+        <button class="btn btn-warning w-100 fw-bold" type="submit">
+          <i class="fas fa-save"></i> {{ t("category.editForm.save") }}
+        </button>
+        <button class="btn btn-secondary w-100 mt-2" @click="cancelEdit">
+          <i class="fas fa-times"></i> {{ t("category.editForm.cancel") }}
+        </button>
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useCategoryStore } from "@/store/categoryStore";
 import { useI18n } from "vue-i18n";
-import { useCategoryStore } from "../../store/categoryStore";
 
-
-const categoryStore = useCategoryStore();
 const { t } = useI18n();
+const categoryStore = useCategoryStore();
+const router = useRouter();
+const route = useRoute();
 
-const isEditing = ref(true);
-const editedCategoryName = ref("");
-const selectedCategory = ref(null);
+const categoryId = route.params.id;
+const categoryName = ref("");
 
-const showEditForm = (category) => {
-  selectedCategory.value = category;
-  editedCategoryName.value = category.name;
-  isEditing.value = true;
+onMounted(async () => {
+  try {
+    const category = await categoryStore.getCategoryById(categoryId);
+    if (category) {
+      categoryName.value = category.name;
+    }
+  } catch (error) {
+    console.error("Failed to load category:", error);
+  }
+});
+
+const submitEditForm = async () => {
+  if (categoryName.value.trim()) {
+    try {
+      await categoryStore.updateCategory({
+        id: categoryId,
+        name: categoryName.value,
+      });
+      router.push({ name: "categorie" });
+    } catch (error) {
+      console.error("Échec de la mise à jour de la catégorie :", error);
+    }
+  }
 };
 
 const cancelEdit = () => {
-  isEditing.value = false;
-  selectedCategory.value = null;
-};
-
-const submitEditForm = () => {
-  if (editedCategoryName.value.trim()) {
-    categoryStore.updateCategory({
-      id: selectedCategory.value.id,
-      name: editedCategoryName.value,
-    });
-    isEditing.value = false;
-  }
+  router.push({ name: "categorie" });
 };
 </script>
 
 <style scoped>
-button {
-  margin-inline-end: 0.5rem;
-}
 </style>
+

@@ -1,6 +1,7 @@
 # Nos recettes
 
 ## Description
+
 Nos recettes est une application web développée avec Vue.js, permettant aux utilisateurs de naviguer facilement entre les différentes pages, telles que l'Accueil et les Recettes. Elle est conçue avec un design responsive pour offrir une expérience utilisateur optimale sur divers appareils.
 
 ## Fonctionnalités
@@ -16,38 +17,39 @@ Nos recettes est une application web développée avec Vue.js, permettant aux ut
 - **Vue Router** pour la gestion de la navigation
 - **Bootstrap 5** pour le design et la mise en page responsive
 
-
 ## Prérequis
 
 - Node.js (version 14 ou supérieure)
-- npm 
+- npm
 
 ## Installation
 
 1. Clonez le repository GitHub :
 
    ```bash
-   https://github.com/Zoubeir7/Recette.git   
+   https://github.com/Zoubeir7/recipe-frontend.git
    ```
 
-2. Accédez au répertoire du projet :
-   ```bash
+2.Accédez au répertoire du projet :
+
+```bash
    cd recette
-   ```
-3. Installez les dépendances :
-   ```bash
+```
+
+3.Installez les dépendances :
+
+```bash
    npm install
-   ```
+```
 
 ## Utilisation
 
 1. Pour démarrer l'application en mode développement :
 
-   ```bash
+```bash
    npm run serve
-   ```
-
+```
 
 ## Auteur
 
-- [Zoubeir Ba](https://github.com/Zoubeir7) 
+- [Assa baradji](https://github.com/AssaBaradji)

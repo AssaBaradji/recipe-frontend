@@ -14,13 +14,10 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { dom } from "@fortawesome/fontawesome-svg-core";
-import AddCategory from "./views/categorie/AddCategory.vue";
 dom.watch();
 
-// Ajouter les icônes FontAwesome
 library.add(fas, fab, far);
 
-// Messages pour les traductions (anglais et français)
 const messages = {
   en: {
     recipes: {
@@ -43,7 +40,7 @@ const messages = {
         tabtype: "type",
         tabingredients: "ingredient",
         tabcat: "category",
-        tabatcion: "Actions",
+        tabaction: "Actions",
         messagesup: "Confirm delete",
         confirmessage: "are sure to delete this category ?",
         annuler: "Cancel",
@@ -103,11 +100,7 @@ const messages = {
       },
     },
     category: {
-      frenchCuisine: "French Cook",
-      moroccanCuisine: "Moroccan Cook",
-      mexicanCuisine: "Mexican Cook",
-      indianCuisine: "Indian Cook",
-      senegaleseCuisine: "Senegalese Cook",
+      editTitle: "Edit Category",
       table: {
         titre_list: "Category Of List",
         Add_category: "Add Category",
@@ -126,7 +119,6 @@ const messages = {
       message: "No Categories Found",
       editCategory: "Edit Category",
       addCategory: "Add Category",
-      saveChanges: "Save Changes",
       add: "Add",
       cancel: "Cancel",
       edit: "Edit",
@@ -138,9 +130,19 @@ const messages = {
         formtitle: "Add New Category",
         formName: "Category Name",
         namePlaceholder: "Enter category name",
-        save: "Save",
+        save: "Save category",
         formbutton: "Edit",
         buttonCancel: "Cancel",
+      },
+      editForm: {
+        name: "Category Name",
+        save: "save",
+        cancel: "cancel",
+      },
+      view_form: {
+        champ_titre: "Category Details",
+        champ_name: "Category Name",
+        champ_close: "Close",
       },
     },
   },
@@ -165,7 +167,7 @@ const messages = {
         tabtype: "type",
         tabingredients: "ingrédients",
         tabcat: "categories",
-        tabatcion: "Actions",
+        tabaction: "Actions",
         messagesup: "Confirmer la suppression",
         confirmessage: "Êtes-vous sûr de vouloir supprimer cette recette ?",
         annuler: "Annuler",
@@ -224,11 +226,7 @@ const messages = {
       },
     },
     category: {
-      frenchCuisine: "Cuisine Française",
-      moroccanCuisine: "Cuisine Marocaine",
-      mexicanCuisine: "Cuisine Mexicaine",
-      indianCuisine: "Cuisine Indienne",
-      senegaleseCuisine: "Cuisine Sénégalaise",
+      editTitle: "Modifier la catégorie",
       table: {
         titre_list: "Liste des Catégories",
         Add_category: "Ajouter une catégorie",
@@ -264,14 +262,23 @@ const messages = {
         formbutton: "Modifier",
         buttonCancel: "Annuler",
       },
+      editForm: {
+        name: "Nom de Catégorie",
+        save: "Enregistrer la Catégorie",
+        cancel: "Annuler",
+      },
+      view_form: {
+        champ_titre: "Détails de la Catégorie",
+        champ_name: "Nom de la catégorie",
+        champ_close: "Fermer",
+      },
     },
   },
 };
 
-// Initialisation de vue-i18n
 const i18n = createI18n({
-  locale: "fr", // Langue par défaut
-  fallbackLocale: "en", // Langue de secours
+  locale: "fr",
+  fallbackLocale: "en",
   messages,
 });
 

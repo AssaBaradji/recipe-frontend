@@ -6,7 +6,8 @@ import AddRecette from "@views/recette/AddRecette.vue";
 import EditRecette from "@views/recette/EditRecette.vue";
 import ShowRecette from "@views/recette/ShowRecette.vue";
 import NotFound from "@views/NotFound.vue";
-
+import CategoryList from "../views/categorie/CategoryList.vue";
+import AddCategory from "../views/categorie/AddCategory.vue";
 
 const routes = [
     {
@@ -35,6 +36,16 @@ const routes = [
         component: EditRecette
     },
     { path: "/:pathMatch(.*)*", component: NotFound },
+    {
+        path: "/categorie",
+        name: "categorie",
+        component: CategoryList
+    },
+    {
+        path: '/categories/add',
+        name: 'category-add',
+        component: AddCategory,
+    },
 ];
 
 const router = createRouter({

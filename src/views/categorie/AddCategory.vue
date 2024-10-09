@@ -1,58 +1,43 @@
-<!-- AddCategory.vue -->
-<template>
-  <div>
-    <div v-if="isAdding">
-      <h3>Ajouter une nouvelle catégorie</h3>
-      <form @submit.prevent="submitAddForm">
-        <div class="mb-3">
-          <input
-            v-model="newCategoryName"
-            class="form-control"
-            type="text"
-            placeholder="Nom de la catégorie"
-          />
-        </div>
-        <button class="btn btn-primary" type="submit">Ajouter</button>
-        <button class="btn btn-secondary" @click="cancelAdd">Annuler</button>
-      </form>
-    </div>
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useCategoryStore } from "@store/categoryStore"; 
+import { useI18n } from "vue-i18n"; 
 
-    <div v-if="!isAdding">
-      <button @click="showAddForm" class="btn btn-success">
-        Ajouter une nouvelle catégorie
+const route = useRouter();
+const categoryStore = useCategoryStore();
+const { t } = useI18n();
+
+const newCategory = ref({
+  name: "", 
+});
+
+const submitCategory = async () => {
+  if (!newCategory.value.name) return;
+
+  await categoryStore.addCategory({ name: newCategory.value.name });
+  route.push({ name: "categorie" }); 
+};
+</script>
+
+<template>
+  <div class="container mt-5">
+    <h1 class="mb-4 text-center fw-bold text-warning">{{ t('category.addForm_category.formtitle') }}</h1>
+
+    <div class="p-4 bg-light rounded shadow-sm">
+      <div class="input-group mb-4">
+        <span class="input-group-text bg-warning text-dark fw-bold">
+          <i class="fas fa-tag"></i>&nbsp;{{ t('category.addForm_category.formName') }}
+        </span>
+        <input type="text" class="form-control" :placeholder="t('category.addForm_category.namePlaceholder')"
+          v-model="newCategory.name" />
+      </div>
+
+      <button class="btn btn-warning w-100 fw-bold" @click="submitCategory" :disabled="!newCategory.name">
+        <i class="fas fa-save"></i> {{ t('category.addForm_category.save') }}
       </button>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useCategoryStore } from "../../store/categoryStore";
-
-const categoryStore = useCategoryStore();
-
-const isAdding = ref(false);
-const newCategoryName = ref("");
-
-const showAddForm = () => {
-  isAdding.value = true;
-  newCategoryName.value = "";
-};
-
-const cancelAdd = () => {
-  isAdding.value = false;
-};
-
-const submitAddForm = () => {
-  if (newCategoryName.value.trim()) {
-    categoryStore.addCategory({ name: newCategoryName.value });
-    isAdding.value = false;
-  }
-};
-</script>
-
-<style scoped>
-button {
-  margin-inline-end: 0.5rem;
-}
-</style>
+<style scoped></style>

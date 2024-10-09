@@ -1,82 +1,124 @@
 <script setup>
+import { ref, onMounted } from "vue";
 import { useRecipeStore } from "@store/recipeStore";
-import { useI18n } from "vue-i18n";
+import { useCategoryStore } from "@store/categoryStore";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 
-const store = useRecipeStore();
-const recipes = store.recipes;
-const route = useRouter();
+
+
 const { t } = useI18n();
+const recipeStore = useRecipeStore();
+const categoryStore = useCategoryStore();
+const router = useRouter();
 
-const destroy = (index) => {
-  const confirm = window.confirm(
-    t('recipes.table.confirmDelete', { recipeTitle: recipes[index].title })
-  );
-  if (confirm) {
-    store.del(index);
+
+const showModal = ref(false);
+const selectedRecipeId = ref(null);
+
+onMounted(() => {
+  recipeStore.loadDataFromApi();
+  categoryStore.loadCategoriesFromAPI();
+});
+
+const goToAddRecipePage = () => {
+  router.push({ name: 'recette-add' });
+};
+
+const goToEditRecipePage = (recipeId) => {
+  router.push({ name: 'recette-edit', params: { id: recipeId } });
+};
+
+const openConfirmationModal = (recipeId) => {
+  selectedRecipeId.value = recipeId;
+  showModal.value = true;
+};
+
+const confirmDeleteRecipe = async () => {
+  if (selectedRecipeId.value) {
+    await recipeStore.deleteRecipeFromAPI(selectedRecipeId.value);
+    showModal.value = false;
+    selectedRecipeId.value = null;
   }
+};
+
+// Fermer le modal
+const closeModal = () => {
+  showModal.value = false;
+  selectedRecipeId.value = null;
 };
 </script>
 
 <template>
-  <div class="container">
-    <!-- Titre de la section -->
-    <h1 class="mt-3 mb-4 text-center fw-bold">{{ t('recipes.title') }}</h1>
+  <div class="container mt-5">
+    <h1 class="mb-4 text-center fw-bold text-warning">{{ t('recipes.table.titleList') }}</h1>
 
-    <!-- Bouton pour ajouter une nouvelle recette -->
-    <div class="d-flex justify-content-center align-items-center mb-4">
-      <button class="btn btn-warning btn-lg mt-4 mb-2" @click="route.push({ name: 'recette-add' })">
-        <i class="fas fa-plus me-2"></i> {{ t('recipes.addNew') }}
+    <div class="text-end mb-4">
+      <button class="btn btn-warning fw-bold" @click="goToAddRecipePage">
+        <i class="fas fa-plus"></i> {{ t('recipes.table.AddRecipe') }}
       </button>
     </div>
 
-    <!-- Tableau des recettes -->
-    <div class="table-responsive">
-      <table class="table table-hover table-striped table-bordered shadow-sm">
-        <thead class="bg-warning text-dark">
-          <tr>
-            <th scope="col" class="text-center">{{ t('recipes.table.number') }}</th>
-            <th scope="col" class="text-center">{{ t('recipes.table.title') }}</th>
-            <th scope="col" class="text-center">{{ t('recipes.table.type') }}</th>
-            <th scope="col" class="text-center">{{ t('recipes.table.actions') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Message quand il n'y a aucune recette -->
-          <tr v-if="recipes.length === 0">
-            <td colspan="4" class="text-danger text-center fw-bold py-3">
-              {{ t('recipes.noRecipes') }}
-            </td>
-          </tr>
-          <!-- Liste des recettes -->
-          <tr v-else v-for="(recipe, index) in recipes" :key="recipe.id">
-            <td class="text-center">{{ recipe.id }}</td>
-            <td class="text-center">{{ recipe.title }}</td>
-            <td class="text-center">{{ recipe.type }}</td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-outline-primary me-2" @click="
-                store.get(index),
-                route.push({ name: 'recette-show', params: { id: recipe.id } })
-                ">
-                <i class="fas fa-eye"></i> {{ t('recipes.buttons.view') }}
-              </button>
-              <button class="btn btn-sm btn-outline-secondary me-2" @click="
-                store.get(index),
-                route.push({ name: 'recette-edit', params: { id: recipe.id } })
-                ">
-                <i class="fas fa-edit"></i> {{ t('recipes.buttons.edit') }}
-              </button>
-              <button class="btn btn-sm btn-outline-danger" @click="destroy(index)">
-                <i class="fas fa-trash"></i> {{ t('recipes.buttons.delete') }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div v-if="recipeStore.recettes.length === 0" class="text-center">
+      <p>{{ t('recipes.table.messageFound') }}.</p>
+    </div>
+
+    <table v-else class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">{{ t('recipes.table.tabtitle') }}</th>
+          <th scope="col">{{ t('recipes.table.tabtype') }}</th>
+          <th scope="col">{{ t('recipes.table.tabingredients') }}</th>
+          <th scope="col">{{ t('recipes.table.tabcat') }}</th>
+          <th scope="col">{{ t('recipes.table.tabaction') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(recette, index) in recipeStore.recettes" :key="recette.id">
+          <th scope="row">{{ index + 1 }}</th>
+          <td>{{ recette.title }}</td>
+          <td>{{ recette.type }}</td>
+          <td>{{ recette.ingredients }}</td>
+          <td>{{ recette.category?.name || 'Non définie' }}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary me-2" @click="goToEditRecipePage(recette.id)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" @click="openConfirmationModal(recette.id)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Modal de confirmation -->
+    <div v-if="showModal" class="modal d-block" tabindex="-1" style="background-color: rgba(0, 0, 0, 0.5);">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ t('recipes.table.messagesup') }}</h5>
+            <button type="button" class="btn-close" @click="closeModal"></button>
+          </div>
+          <div class="modal-body">
+            <p>{{ t('recipes.table.confirmessage') }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="closeModal">{{ t("recipes.table.annuler") }}</button>
+            <button type="button" class="btn btn-danger" @click="confirmDeleteRecipe">{{ t("recipes.table.delete") }}</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Vos styles ici */
+/* Style pour modal personnalisé */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

@@ -1,75 +1,55 @@
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
+import axios from "axios";
 
 export const useRecipeStore = defineStore("RecipeStore", () => {
-  //variables
-  const recipes = reactive([
-    {
-      id: 1,
-      title: "Salade de Quinoa",
-      type: "Entrée",
-      ingredients: [
-        "Quinoa",
-        "Tomates cerises",
-        "Concombre",
-        "Feta",
-        "Olives noires",
-        "Vinaigrette"
-      ]
-    },
-    {
-      id: 2,
-      title: "Poulet au Curry",
-      type: "Plat Principal ",
-      ingredients: [
-        "Poulet",
-        "Pâte de curry",
-        "Lait de coco",
-        "Oignons",
-        "Poivrons",
-        "Riz basmati"
-      ]
-    }, {
-      id: 3,
-      title: "Soupe à l'Oignon",
-      type: "Entrée",
-      ingredients: [
-        "Oignons",
-        "Bouillon de bœuf",
-        "Beurre",
-        "Pain grillé",
-        "Gruyère râpé",
-      ],
-    },
-  ]);
-  const val = ref(0);
-  const newRecipe = ref({
-    title: "",
-    type: "",
-    ingredients: [],
-  });
+  const recettes = ref([]);
 
-  //Functions
-  const del = (id) => {
-    recipes.splice(id, 1);
+  const loadDataFromApi = async () => {
+    try {
+      const resp = await axios.get("http://localhost:3002/recipes");
+      recettes.value = resp.data;
+    } catch (error) {
+      recettes.value = [];
+      console.error("Erreur lors du chargement des recettes :", error);
+    }
   };
-  const get = (index) => {
-    val.value = index;
-    newRecipe.value = recipes[index];
+
+  const addRecipeToAPI = async (newRecipe) => {
+    try {
+      const resp = await axios.post("http://localhost:3002/recipes", newRecipe);
+      recettes.value.push(resp.data);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la recette :", error);
+    }
   };
-  const edit = (index) => {
-    recipes[index].id = index + 1;
-    recipes[index].title = newRecipe.value.title;
-    recipes[index].type = newRecipe.value.type;
-    recipes[index].ingredients = newRecipe.value.ingredients.split(",");
+
+  const deleteRecipeFromAPI = async (recipeId) => {
+    try {
+      await axios.delete(`http://localhost:3002/recipes/${recipeId}`);
+      recettes.value = recettes.value.filter((recette) => recette.id !== recipeId);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la recette :", error);
+    }
   };
-  const add = (newRecipe) => {
-    recipes.push({
-      id: recipes.length + 1,
-      title: newRecipe.title,
-      type: newRecipe.type,
-      ingredients: newRecipe.ingredients.split(","),
-    });
+
+  const editRecipe = async (updatedRecipe) => {
+    try {
+      const resp = await axios.put(`http://localhost:3002/recipes/${updatedRecipe.id}`, updatedRecipe);
+      const index = recettes.value.findIndex((r) => r.id === updatedRecipe.id);
+      if (index !== -1) {
+        recettes.value[index] = resp.data;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la modification de la recette :", error);
+    }
   };
-  return { recipes, val, newRecipe, del, get, edit, add };
+
+  return {
+    recettes,
+    loadDataFromApi,
+    addRecipeToAPI,
+    deleteRecipeFromAPI,
+    editRecipe
+  };
 });

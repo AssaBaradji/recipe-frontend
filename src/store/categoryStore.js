@@ -1,40 +1,43 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import axios from "axios";
 
 export const useCategoryStore = defineStore("category", () => {
-  const categories = ref([
-    { id: 1, name: "Américain" },
-    { id: 2, name: "Français" },
-    { id: 3, name: "Italien" },
-    { id: 4, name: "Mexicain" },
-    { id: 5, name: "Végétarien" },
-  ]);
+  const categories = ref([]);
 
-  const addCategory = (newCategory) => {
-    const newId =
-      categories.value.length > 0
-        ? categories.value[categories.value.length - 1].id + 1
-        : 1;
-    categories.value.push({ id: newId, name: newCategory.name });
-  };
 
-  const updateCategory = (updatedCategory) => {
-    const index = categories.value.findIndex(
-      (cat) => cat.id === updatedCategory.id
-    );
-    if (index !== -1) {
-      categories.value[index].name = updatedCategory.name;
+  const loadCategoriesFromAPI = async () => {
+    try {
+      const response = await axios.get("http://localhost:3002/categories");
+      categories.value = response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des catégories:", error);
     }
   };
 
-  const deleteCategory = (categoryId) => {
-    categories.value = categories.value.filter((cat) => cat.id !== categoryId);
+  const addCategory = async (category) => {
+    try {
+      const response = await axios.post("http://localhost:3002/categories", category);
+      categories.value.push(response.data);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de la catégorie:", error);
+    }
+  };
+
+  const deleteCategory = async (categoryId) => {
+    try {
+      const response = await axios.delete(`http://localhost:3002/categories/${categoryId}`);
+      console.log('Réponse de la suppression:', response);
+      categories.value = categories.value.filter((category) => category.id !== categoryId);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la catégorie:", error);
+    }
   };
 
   return {
     categories,
+    loadCategoriesFromAPI,
     addCategory,
-    updateCategory,
     deleteCategory,
   };
 });

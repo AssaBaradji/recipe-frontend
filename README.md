@@ -1,7 +1,7 @@
-# CuisineZu
+# Nos recettes
 
 ## Description
-CuisineZu est une application web développée avec Vue.js, permettant aux utilisateurs de naviguer facilement entre les différentes pages, telles que l'Accueil et les Recettes. Elle est conçue avec un design responsive pour offrir une expérience utilisateur optimale sur divers appareils.
+Nos recettes est une application web développée avec Vue.js, permettant aux utilisateurs de naviguer facilement entre les différentes pages, telles que l'Accueil et les Recettes. Elle est conçue avec un design responsive pour offrir une expérience utilisateur optimale sur divers appareils.
 
 ## Fonctionnalités
 
@@ -21,7 +21,6 @@ CuisineZu est une application web développée avec Vue.js, permettant aux utili
 
 - Node.js (version 14 ou supérieure)
 - npm 
-- Docker (pour la conteneurisation)
 
 ## Installation
 
@@ -48,11 +47,6 @@ CuisineZu est une application web développée avec Vue.js, permettant aux utili
    npm run serve
    ```
 
-1. Pour exécuter le conteneur Docker :
-
-   ```bash
-   docker run -d -p 4000:81 recette
-   ```
 
 ## Auteur
 

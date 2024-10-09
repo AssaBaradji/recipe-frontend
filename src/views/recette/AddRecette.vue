@@ -1,27 +1,64 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useRecipeStore } from "@store/recipeStore";
+import { useCategoryStore } from "../../store/categoryStore";
 import { useI18n } from "vue-i18n";
 
 const route = useRouter();
-const store = useRecipeStore();
-const { t } = useI18n(); // Utilisation de vue-i18n pour la traduction
+const recipeStore = useRecipeStore();
+const categoryStore = useCategoryStore();
+const { t } = useI18n();
+
+const categories = ref([
+  { id: 1, name: t('category.frenchCuisine') },
+  { id: 2, name: t('category.moroccanCuisine') },
+  { id: 3, name: t('category.mexicanCuisine') },
+  { id: 6, name: t('category.indianCuisine') },
+  { id: 10, name: t('category.senegaleseCuisine') },
+]);
 
 const newRecipe = ref({
   title: "",
   type: "",
-  ingredients: [],
+  ingredient: "",
+  category_id: null,
 });
-</script>
 
+const errorMessage = ref("");
+const successMessage = ref("");
+
+onMounted(async () => {
+  await categoryStore.loadCategoriesFromAPI();
+});
+
+const submitRecipe = async () => {
+  errorMessage.value = "";
+  successMessage.value = "";
+
+  if (!newRecipe.value.title || !newRecipe.value.type || !newRecipe.value.ingredient || !newRecipe.value.category_id) {
+    errorMessage.value = t('recipes.addForm.missingFields');
+    return;
+  }
+
+  try {
+    await recipeStore.addRecipeToAPI(newRecipe.value);
+    successMessage.value = t('recipes.addForm.success');
+    route.push({ name: "recette" });
+  } catch (error) {
+    errorMessage.value = t('recipes.addForm.error');
+  }
+};
+</script>
 <template>
   <div class="container mt-5">
-    <!-- Titre de la page avec traduction -->
     <h1 class="mb-4 text-center fw-bold text-warning">{{ t('recipes.addForm.title') }}</h1>
 
     <div class="p-4 bg-light rounded shadow-sm">
-      <!-- Titre de la recette avec traduction -->
+
+      <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
           <i class="fas fa-pen"></i>&nbsp;{{ t('recipes.addForm.recipeTitle') }}
@@ -30,33 +67,41 @@ const newRecipe = ref({
           v-model="newRecipe.title" />
       </div>
 
-      <!-- Type de la recette avec traduction -->
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
           <i class="fas fa-utensils"></i>&nbsp;{{ t('recipes.addForm.recipeType') }}
         </span>
         <select class="form-select" v-model="newRecipe.type">
-          <option value="Entrée">{{ t('recipes.table.starter') }}</option>
-          <option value="Plat">{{ t('recipes.table.mainCourse') }}</option>
-          <option value="Dessert">{{ t('recipes.table.dessert') }}</option>
+          <option value="Entrée">{{ t('recipes.edit_form.option_Entrée') }}</option>
+          <option value="Plat">{{ t('recipes.edit_form.option_plat') }}</option>
+          <option value="Dessert">{{ t('recipes.edit_form.option_dessert') }}</option>
         </select>
       </div>
 
-      <!-- Ingrédients de la recette avec traduction -->
       <div class="input-group mb-4">
         <span class="input-group-text bg-warning text-dark fw-bold">
           <i class="fas fa-carrot"></i>&nbsp;{{ t('recipes.addForm.ingredients') }}
         </span>
         <input type="text" class="form-control" :placeholder="t('recipes.addForm.ingredientsPlaceholder')"
-          v-model="newRecipe.ingredients" />
+          v-model="newRecipe.ingredient" />
       </div>
 
-      <!-- Bouton d'enregistrement avec traduction -->
-      <button class="btn btn-warning w-100 fw-bold" @click="store.add(newRecipe); route.push({ name: 'recette' })">
+      <div class="input-group mb-4">
+        <span class="input-group-text bg-warning text-dark fw-bold">
+          <i class="fas fa-tags"></i>&nbsp;{{ t('recipes.addForm.category') }}
+        </span>
+        <select class="form-select" v-model="newRecipe.category_id">
+          <option disabled value="">{{ t('recipes.addForm.selectCategory') }}</option>
+          <option v-for="category in categories" :key="category.id" :value="category.id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+
+      <button class="btn btn-warning w-100 fw-bold" @click="submitRecipe"
+        :disabled="!newRecipe.title || !newRecipe.type || !newRecipe.ingredient || !newRecipe.category_id">
         <i class="fas fa-save"></i> {{ t('recipes.addForm.save') }}
       </button>
     </div>
   </div>
 </template>
-
-<style scoped></style>
